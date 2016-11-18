@@ -1,0 +1,1 @@
+Copy MP3 files to this folder to enable the playback of background music. These MP3 files will be played in random order.
