@@ -6,4 +6,4 @@ I put my codes here, hopefully anyone can get inspired or help from my work. Thi
 
 Before playing the game, you can copy some JPG and MP3 files you like into BKIMG and BGM folders respectively, so as to show those images sliding under the chess board and to enable the playback of background music. The JPGs can be in any size, but if their dimension is 800x600, it will consume much less CPU resources for image conversion.
 
-I hope you enjoy playing Othello with the avatar of my son, actually the computer, and welcome to leave me any comments about the game, especially on the artificial intelligence part. About license of the codes, I actually have no idea about it. I think anyone is free to use my code, just giving me some credit. 
+I hope you enjoy playing Othello with the avatar of my son, actually the computer, and welcome to leave me any comments about the game, especially on the artificial intelligence part. This work is under MIT License, and anyone is free to use my code, just giving me some credit. 
