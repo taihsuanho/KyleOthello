@@ -10,7 +10,7 @@ from distutils.core import setup
 import glob
 import py2exe
 
-resources = glob.glob('resources/*.wav') + glob.glob('resources/*.png') 
+resources = glob.glob('resources/*.*')
 bkimgs = list(set(glob.glob('BKIMG/*.jpg')))
 bgms = list(set(glob.glob('BGM/*.mp3')))
 

@@ -188,16 +188,17 @@ class TaiButtonGroup:
 		imgText = font.render(text, True, text_color)
 		(w, h) = imgText.get_size()
 		n = 1 if shadow else 0
-		imgBtnUp = pygame.Surface((w + n, h + n))
-		imgBtnDn = pygame.Surface((w + n, h + n))
-		imgBtnUp.fill(bk_color)
-		imgBtnDn.fill(bk_color)
-		if shadow:
-			pygame.draw.rect(imgBtnUp, COLOR_BLACK, imgBtnUp.get_rect(), 1)
-		pygame.draw.rect(imgBtnUp, bd_color, imgText.get_rect(), 1)
-		if shadow: 
-			pygame.draw.rect(imgBtnDn, COLOR_BLACK, imgBtnDn.get_rect(), 1)
-		pygame.draw.rect(imgBtnDn, bd_color, imgText.get_rect(topleft = (n, n)), 1)
+		imgBtnUp = pygame.Surface((w + n, h + n), pygame.SRCALPHA, 32)
+		imgBtnDn = pygame.Surface((w + n, h + n), pygame.SRCALPHA, 32)
+		if bk_color:
+			imgBtnUp.fill(bk_color)
+			imgBtnDn.fill(bk_color)
+		if bd_color:
+			if shadow:
+				pygame.draw.rect(imgBtnUp, COLOR_BLACK, imgBtnUp.get_rect(), 1)
+				pygame.draw.rect(imgBtnDn, COLOR_BLACK, imgBtnDn.get_rect(), 1)
+			pygame.draw.rect(imgBtnUp, bd_color, imgText.get_rect(), 1)
+			pygame.draw.rect(imgBtnDn, bd_color, imgText.get_rect(topleft = (n, n)), 1)
 		imgBtnUp.blit(imgText, (0, 0))
 		imgBtnDn.blit(imgText, (n, n))
 		btn = self.CreateButton(parent, pos, imgBtnUp, imgBtnDn, imgBtnUp, event, param)
