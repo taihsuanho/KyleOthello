@@ -60,5 +60,5 @@ def ShowLoading(check_event, color = COLOR_WHITE, min_duration = 0):
 	except: 
 		img = None
 	font = pygame.font.SysFont('comicsansms', 20, bold = False)
-	TaiMsgBox.MessageBox(text, font = font, width = 600, right_image = img, text_ok = '   OK   ', bk_color = COLOR_DARKGRAY, text_color = COLOR_WHITE)
+	TaiMsgBox.MessageBox(text, font = font, width = 600, right_image = img, text_ok = '   OK   ', bd_color = COLOR_LIGHTGRAY, bk_color = COLOR_DARKGRAY, text_color = COLOR_WHITE)
 

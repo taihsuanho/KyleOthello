@@ -52,19 +52,33 @@ def _create_text_image(text, color, font, width):
 	_draw_text(surface, text, color, font, width)
 	return surface
 
-def _draw_text_image(surface, text_image, bd_color, bk_color, left_image):
+def _draw_message_box(surface, text_image, bd_color, bk_color, bk_image, left_image, right_image):
 	# Draw the text image to the surface, considering the existence of the left image.
-	surface.fill(bk_color)
-	pygame.draw.rect(surface, bd_color, surface.get_rect(), 1)
-	x = y = TEXT_MARGIN
+	(width, height) = surface.get_size()
+	# Draw the background image or fill the background color.
+	if bk_image:
+		surface.blit(bk_image, (0, 0))
+	else:
+		surface.fill(bk_color)
+	# Draw the border.
+	if bd_color:
+		pygame.draw.rect(surface, bd_color, surface.get_rect(), 1)
+	# Draw left image, text image, and right image.
+	x = TEXT_MARGIN
 	if left_image:
+		surface.blit(left_image, (x, (height - left_image.get_height()) // 2))
 		x += left_image.get_width() + TEXT_MARGIN
-	surface.blit(text_image, (x, y))
+	surface.blit(text_image, (x, TEXT_MARGIN))
+	x += text_image.get_width() + TEXT_MARGIN
+	if right_image:
+		surface.blit(right_image, (x, (height - right_image.get_height()) // 2))
 	
 def _create_buttons(surface, posMsgBox, btns, text_ok, text_cancel, font, bd_color, bk_color, text_color, left_image, right_image):
 	# Create buttons and place it in the center bottom of the text part, considering the existence of left and right images.
 	if not text_ok:
 		return None, None
+	if not bd_color:
+		bd_color = COLOR_WHITE
 	wMsg, hMsg = surface.get_size()
 	btnOK = btns.CreateTextButton(surface, (0, 0), text_ok, font, bd_color = bd_color, bk_color = bk_color, text_color = text_color, event = USEREVENT_OK)
 	btnOK.SetParentPos(posMsgBox)
@@ -91,6 +105,8 @@ def MessageBox(message, **args):
 	except: font = pygame.font.SysFont("microsoftjhenghei, comicsansms", 20, bold = False)
 	try: 	width = args['width']
 	except: width = 0
+	try: 	bk_image = args['bk_image']
+	except: bk_image = None
 	try: 	left_image = args['left_image']
 	except: left_image = None
 	try: 	right_image = args['right_image']
@@ -100,9 +116,9 @@ def MessageBox(message, **args):
 	try: 	text_cancel = args['text_cancel']
 	except: text_cancel = None
 	try:	bd_color = args['bd_color']
-	except:	bd_color = COLOR_WHITE
+	except:	bd_color = None
 	try:	bk_color = args['bk_color']
-	except:	bk_color = COLOR_BLACK
+	except:	bk_color = None
 	try:	text_color = args['text_color']
 	except:	text_color = COLOR_LIGHTGRAY
 	# Cancel button is ignored if OK button text is not given.
@@ -121,8 +137,8 @@ def MessageBox(message, **args):
 	if width < font.size("W")[0]:
 		return
 	# Create the text image, and determine the size of the text part, regardless the left and right images.
-	imgText = _create_text_image(message, text_color, font, width)
-	wMsg, hMsg = imgText.get_size()
+	text_image = _create_text_image(message, text_color, font, width)
+	wMsg, hMsg = text_image.get_size()
 	if  wMsg < max(wOK, wCancel) * 2 + TEXT_MARGIN:
 		wMsg = max(wOK, wCancel) * 2 + TEXT_MARGIN
 	wMsg += 2 * TEXT_MARGIN
@@ -131,12 +147,9 @@ def MessageBox(message, **args):
 	wMsg += wl + wr
 	hMsg = max(hMsg, hl, hr)
 	surface = pygame.Surface((wMsg, hMsg))
-	# Draw text image and the left and right images.
-	_draw_text_image(surface, imgText, bd_color, bk_color, left_image)	
-	if left_image:
-		surface.blit(left_image, (TEXT_MARGIN, (hMsg - hl) // 2 + TEXT_MARGIN))
-	if right_image:
-		surface.blit(right_image, (wMsg - wr, (hMsg - hr) // 2 + TEXT_MARGIN))
+	# Resize the background image to fit in the frame of message box.
+	if bk_image:
+		bk_image = pygame.transform.smoothscale(bk_image, (wMsg, hMsg))
 	# Calc. the left top position of the message box, putting the message box in center of the display.
 	(w0, h0) = displaySurface.get_size()
 	posMsg = ((w0 - wMsg) // 2, (h0 - hMsg) // 2)
@@ -166,10 +179,7 @@ def MessageBox(message, **args):
 		bNeedRedraw = bNeedRedraw or btns.NeedRedraw()
 		if bNeedRedraw:
 			bNeedRedraw = False
-			if btnOK:
-				surface.fill(bk_color, btnOK.get_rect())
-			if btnCancel:
-				surface.fill(bk_color, btnCancel.get_rect())
+			_draw_message_box(surface, text_image, bd_color, bk_color, bk_image, left_image, right_image)
 			btns.DrawAll()
 			displaySurface.blit(surface, posMsg)
 			pygame.display.update(rectMsg)

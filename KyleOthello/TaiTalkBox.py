@@ -82,10 +82,26 @@ def _draw_next_indicator(font, pos, duration, color):
 		pygame.display.update(rect)
 		myClock.tick(fps)
 
+def _draw_box(surface, bk_image, bk_color, bd_color, left_image, right_image):
+	# Draw background image or fill color to the base surface, and draw the border, and left and right images.
+	(width, height) = surface.get_size()
+	if bk_image:
+		surface.blit(bk_image, (0, 0))
+	else:
+		surface.fill(bk_color)
+	if bd_color:
+		pygame.draw.rect(surface, bd_color, surface.get_rect(), 1)
+	if left_image:
+		surface.blit(left_image, (TEXT_MARGIN, (height - left_image.get_height()) // 2))
+	if right_image:
+		surface.blit(right_image, (width - right_image.get_width() - TEXT_MARGIN, (height - right_image.get_height()) // 2))
+
 def TalkBox(message, rect, **args):
 	# Draw a box showing the input message char-by-char. All text is drawn when MOUSEBUTTONUP or KEYUP event is received.
 	try: 	font = args['font'] 
 	except: font = pygame.font.SysFont("microsoftjhenghei, comicsansms", 20, bold = False)
+	try: 	bk_image = args['bk_image']
+	except: bk_image = None
 	try: 	left_image = args['left_image']
 	except: left_image = None
 	try: 	right_image = args['right_image']
@@ -93,7 +109,7 @@ def TalkBox(message, rect, **args):
 	try: 	next_image = args['next_image']
 	except: next_image = None
 	try:	bd_color = args['bd_color']
-	except:	bd_color = COLOR_WHITE
+	except:	bd_color = None
 	try:	bk_color = args['bk_color']
 	except:	bk_color = COLOR_BLACK
 	try:	text_color = args['text_color']
@@ -110,14 +126,9 @@ def TalkBox(message, rect, **args):
 	if wt < min_size[0] or ht < min_size[1]:
 		return
 	text_rect = pygame.Rect(wl + TEXT_MARGIN, TEXT_MARGIN, wt, ht)
-	# Create talk box surface, fill background color, and draw the border, and left and right images.
+	# Create talk box surface and draw the box.
 	surface = pygame.Surface(rect.size)
-	surface.fill(bk_color)
-	pygame.draw.rect(surface, bd_color, surface.get_rect(), 1)
-	if left_image:
-		surface.blit(left_image, (TEXT_MARGIN, (rect.height - hl) // 2 + TEXT_MARGIN))
-	if right_image:
-		surface.blit(right_image, (rect.width - wr, (rect.height - hr) // 2 + TEXT_MARGIN))
+	_draw_box(surface, bk_image, bk_color, bd_color, left_image, right_image)
 	# Start to draw text char-by-char.
 	x, y, line_height, row_text, bOneShot = 0, 0, 0, '', False
 	fps = 1000 / duration
@@ -154,7 +165,7 @@ def TalkBox(message, rect, **args):
 						yNext = rect.top + rect.height - max(TEXT_MARGIN, size[1])
 						_draw_next_indicator(font, (xNext, yNext), 200, text_color)
 					# Clear the text region and prepare to draw next page.
-					surface.fill(bk_color, text_rect)
+					_draw_box(surface, bk_image, bk_color, bd_color, left_image, right_image)
 					y, bOneShot = 0, False
 					continue
 			# If there are chars available in the current row, draw them one-by-one or in one shot.

@@ -46,7 +46,7 @@ gBtnActor, gBtnReset = None, None
 gImgActor, gImgActorWin, gImgActorLose = None, None, None
 gImgPass, gImgOhYeah, gImgOhNo, gAnimThinks = None, None, None, None
 gImgPieceWhite, gImgPieceBlack, gImgPieceWhiteSmall, gImgPieceBlackSmall, gPieceSlider = None, None, None, None, None
-gImgArrowDown = None
+gImgArrowDown, gImgWoodFrame = None, None
 gSndActorChess, gSndUserChess = None, None
 gSndActorWin, gSndActorLose = None, None
 gSndActorPass, gSndPlayerPass = None, None
@@ -96,12 +96,13 @@ def LoadResources(gameDisplay):
 	gBtnLeft.SetCallback(ChangeDifficulty, (-1, ))
 	gBtnRight.SetCallback(ChangeDifficulty, (1, ))
 	
-	global gBtnActor, gImgActor, gImgActorWin, gImgActorLose, gImgArrowDown
-	gImgArrowDown = pygame.image.load("resources/ArrowDown.png").convert_alpha()
+	global gBtnActor, gImgActor, gImgActorWin, gImgActorLose, gImgArrowDown, gImgWoodFrame
 	gImgActor = pygame.image.load("resources/KyleThink.png").convert_alpha()
+	gBtnActor = gAllBtns.CreateButton(gameDisplay, (610, 380), gImgActor, None, None, OnBtnActorPressed)
 	gImgActorWin = pygame.image.load("resources/KyleWin.png").convert_alpha()
 	gImgActorLose = pygame.image.load("resources/KyleLose.png").convert_alpha()
-	gBtnActor = gAllBtns.CreateButton(gameDisplay, (610, 380), gImgActor, None, None, OnBtnActorPressed)
+	gImgArrowDown = pygame.image.load("resources/ArrowDown.png").convert_alpha()
+	gImgWoodFrame = pygame.image.load("resources/WoodFrame.jpg").convert()
 
 	global gImgPass, gImgOhYeah, gImgOhNo
 	gImgPass   = pygame.image.load("resources/Pass.png").convert_alpha()
@@ -253,9 +254,9 @@ def OnBtnActorPressed():
 	rect = pygame.Rect(150, 450, 500, 100)
 	if all(ord(c) < 128 for c in saying):
 		font = pygame.font.SysFont('comicsansms', 16, bold = False)
-		TaiTalkBox.TalkBox(saying, rect, font = font, next_image = gImgArrowDown, bk_color = COLOR_BLACK, text_color = COLOR_WHITE, duration = 20)
+		TaiTalkBox.TalkBox(saying, rect, font = font, bk_image = gImgWoodFrame, next_image = gImgArrowDown, bd_color = COLOR_WHITE, text_color = COLOR_WHITE, duration = 20)
 	else:
-		TaiTalkBox.TalkBox(saying, rect, next_image = gImgArrowDown, bk_color = COLOR_BLACK, text_color = COLOR_WHITE, duration = 50)
+		TaiTalkBox.TalkBox(saying, rect, bk_image = gImgWoodFrame, next_image = gImgArrowDown, bd_color = COLOR_WHITE, text_color = COLOR_WHITE, duration = 50)
 
 def TurnOnOffMusic(turnON, btnMusicNote):
 	if turnON:
@@ -331,7 +332,7 @@ def StartPlayChess():
 				text = 'This chess tournament is still ongoing. Do you really want to abandon this round?'
 				img = pygame.image.load('resources/Othello.png').convert_alpha()
 				font = pygame.font.SysFont('comicsansms', 20, bold = False)
-				if TaiMsgBox.MessageBox(text, font = font, width = 500, right_image = img, text_ok = '   Yes   ', text_cancel = '   No   ', bk_color = COLOR_BLACK, text_color = COLOR_WHITE):
+				if TaiMsgBox.MessageBox(text, font = font, width = 500, bk_image = gImgWoodFrame, left_image = img, text_ok = '   Yes   ', text_cancel = '   No   ', bd_color = COLOR_LIGHTGRAY, text_color = COLOR_WHITE):
 					return
 			# Processing mouse events.
 			if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION):
