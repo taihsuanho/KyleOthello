@@ -101,8 +101,6 @@ def _create_buttons(surface, posMsgBox, btns, text_ok, text_cancel, font, bd_col
 
 def MessageBox(message, **args):
 	# Draw a message box with optional OK and Cancel buttons.
-	try: 	font = args['font'] 
-	except: font = pygame.font.SysFont("microsoftjhenghei, comicsansms", 20, bold = False)
 	try: 	width = args['width']
 	except: width = 0
 	try: 	bk_image = args['bk_image']
@@ -121,6 +119,11 @@ def MessageBox(message, **args):
 	except:	bk_color = None
 	try:	text_color = args['text_color']
 	except:	text_color = COLOR_LIGHTGRAY
+	try: 	font = args['font'] 
+	except: font = None
+	if font is None:
+		try: font = pygame.font.SysFont("microsoftjhenghei, comicsansms", 20, bold = False)
+		except: font = pygame.font.Font(None, 32)
 	# Cancel button is ignored if OK button text is not given.
 	if not text_ok: text_cancel = None
 	# Determine the sizes of the buttons.
