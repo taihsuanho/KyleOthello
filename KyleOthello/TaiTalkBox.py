@@ -98,8 +98,6 @@ def _draw_box(surface, bk_image, bk_color, bd_color, left_image, right_image):
 
 def TalkBox(message, rect, **args):
 	# Draw a box showing the input message char-by-char. All text is drawn when MOUSEBUTTONUP or KEYUP event is received.
-	try: 	font = args['font'] 
-	except: font = pygame.font.SysFont("microsoftjhenghei, comicsansms", 20, bold = False)
 	try: 	bk_image = args['bk_image']
 	except: bk_image = None
 	try: 	left_image = args['left_image']
@@ -116,6 +114,11 @@ def TalkBox(message, rect, **args):
 	except:	text_color = COLOR_LIGHTGRAY
 	try:	duration = args['duration']
 	except:	duration = 25
+	try: 	font = args['font'] 
+	except: font = None
+	if font is None:
+		try: font = pygame.font.SysFont("microsoftjhenghei, comicsansms", 20, bold = False)
+		except: font = pygame.font.Font(None, 32)
 	# Get the width and height of the left and right images.
 	(wl, hl) = (left_image.get_width() + TEXT_MARGIN, left_image.get_height() + 2 * TEXT_MARGIN) if left_image else (0, 0)
 	(wr, hr) = (right_image.get_width() + TEXT_MARGIN, right_image.get_height() + 2 * TEXT_MARGIN) if right_image else (0, 0)
